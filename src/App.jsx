@@ -1,24 +1,41 @@
 import * as React from 'react';
 
-const List = ({list}) => (
-  <ul>
-    {list.map((item) => (
-      <Item key={item.objectID} item={item} />
-    ))}
-  </ul>
-);
+const List = ({list,onRemoveItem})=>(
+    <ul>
+      {list.map((item)=>(
+        <Item 
+        key={item.objectID}
+        item={item}
+        onRemoveItem={onRemoveItem}
+        />
+      )
+      )
+      }
+    </ul>
+  );
 
-const Item = ({item}) => (
-  <li>
-    <span>
-      <a href={item.url}>{item.title}</a>
-    </span>
-    <span>{item.author}</span>
-    <span>{item.num_comments}</span>
-    <span>{item.points}</span>
-  </li>
-);
 
+const Item = ({item,onRemoveItem})=>(
+
+      <li>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+        <span>
+          <button type="button" onClick={()=>{
+                //fai qualcosa
+                //console.log("Ciao");
+                onRemoveItem(item);
+                }
+          }>
+            Dismiss
+          </button>
+        </span>
+      </li>
+);
 
 
 const InputWithLabel = ({id,label,value,type='text',onInputChange,isFocused,children}) => {
@@ -53,7 +70,7 @@ const useStorageState = (key,initialState) => {
 
 const App = () => {
 
-  const stories =[{
+  const initialStories =[{
     title:'React',
     url:'https://reactjs.org',
     author:'Jordan Walke',
@@ -74,7 +91,19 @@ const App = () => {
   const [searchTerm, setSearchTerm]=useStorageState(
     'search','React'
   );
+
+  const [stories,setStories] = React.useState(initialStories);
   
+  const handleRemoveStory = (item) =>{
+    const newStory=stories.filter(
+      (story)=>item.objectID !== story.objectID
+      );
+    setStories(newStory);
+  };
+
+  
+  
+
   const handleSearch=(event)=>{
     setSearchTerm(event.target.value);
     console.log(event.target.value);
@@ -100,7 +129,7 @@ const App = () => {
     </InputWithLabel>
     <hr />
 
-    <List list={searchedStories} />
+    <List list={searchedStories} onRemoveItem={handleRemoveStory} />
   </div>
   );
 };
