@@ -56,24 +56,29 @@ const App = () => {
     storiesReducer,
     {data: [],isLoading: false,isError: false}
   );
- 
-  React.useEffect(() => {
+
+  //A
+  const handleFetchStories = React.useCallback(()=>{//B
     //se searchTerm non è presente, es: null, empty, undefined
     // non fare nulla
     if(!searchTerm) return;
     dispatchStories({type: 'STORIES_FETCH_INIT'});
     fetch(`${API_ENDPOINT}${searchTerm}`) //Richiediamo i dati filtrati in base al campo di input
-      .then((response)=>response.json()) //C
+      .then((response)=>response.json()) 
         .then((result)=>{
             dispatchStories({
             type: 'STORIES_FETCH_SUCCESS',
-            payload: result.hits,//D
+            payload: result.hits,
             });
           })
       .catch(() => 
         dispatchStories({type: 'STORIES_FETCH_FAILURE'})
       );
-  }, [searchTerm]);
+  }, [searchTerm]);//E
+ 
+  React.useEffect(() => {
+      handleFetchStories();//C
+  },[handleFetchStories]);//D
 
   const handleRemoveStory = (item) => {
     dispatchStories({
