@@ -2,6 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
+
 const storiesReducer = (state, action) => {
   switch (action.type) {
     case 'STORIES_FETCH_INIT':
